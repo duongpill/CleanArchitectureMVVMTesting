@@ -7,8 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.duongnh.catastrophic.navigation.MyNavGraph
-import com.duongnh.catastrophic.ui.theme.CATastrophicTheme
+import com.duongnh.catastrophic.presentation.navigation.MyNavGraph
+import com.duongnh.catastrophic.presentation.theme.CATastrophicTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

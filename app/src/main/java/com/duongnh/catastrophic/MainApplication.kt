@@ -15,7 +15,7 @@ import okhttp3.OkHttpClient
 import javax.inject.Inject
 
 @HiltAndroidApp
-class MainApplication: Application(), SingletonImageLoader.Factory {
+class MainApplication : Application(), SingletonImageLoader.Factory {
 
     @Inject
     lateinit var okHttpClient: OkHttpClient

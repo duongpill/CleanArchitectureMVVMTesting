@@ -1,4 +1,4 @@
-package com.duongnh.catastrophic.presentation.cat
+package com.duongnh.catastrophic.presentation.screen.cat
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -16,9 +16,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,9 +29,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -39,10 +37,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import coil3.Bitmap
 import com.duongnh.catastrophic.domain.model.Cat
-import com.duongnh.catastrophic.presentation.cat.components.CatCard
 import com.duongnh.catastrophic.utils.TestTags
 import com.duongnh.catastrophic.utils.Utils
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 
 @Composable
 fun CatGalleryScreen(
@@ -50,17 +51,20 @@ fun CatGalleryScreen(
     uiState: CatUIState,
     onPhotoTapped: (Cat) -> Unit,
     onClosePhoto: () -> Unit,
-    loadMore: () -> Unit
+    loadMore: () -> Unit,
+    updateCat: (String, Bitmap) -> Unit
 ) {
     CatGalleryScreenWithList(
         modifier = modifier,
         uiState = uiState
     ) { contentPadding, contentModifier ->
+        // Put it here to hold the grid state
+        val gridState = rememberLazyGridState()
         AnimatedContent(targetState = uiState.isPhotoOpen, transitionSpec = {
             scaleIn(animationSpec = tween(150)) togetherWith
                     scaleOut(animationSpec = tween(150)) using
                     SizeTransform { initialSize, targetSize ->
-                        if(targetState) {
+                        if (targetState) {
                             keyframes {
                                 // Expand horizontally first.
                                 IntSize(targetSize.width, initialSize.height)
@@ -86,11 +90,13 @@ fun CatGalleryScreen(
                 )
             } else {
                 CatList(
+                    gridState = gridState,
                     cats = uiState.cats,
                     contentPadding = contentPadding,
                     isLoading = uiState.isLoading,
                     openPhoto = onPhotoTapped,
-                    loadMore = loadMore
+                    loadMore = loadMore,
+                    updateCat = updateCat
                 )
             }
         }
@@ -154,42 +160,49 @@ private fun LoadingContent(
 
 @Composable
 private fun CatList(
+    gridState: LazyGridState,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     cats: List<Cat>,
     isLoading: Boolean,
     openPhoto: (cat: Cat) -> Unit,
-    loadMore: () -> Unit
+    loadMore: () -> Unit,
+    updateCat: (String, Bitmap) -> Unit
 ) {
-    val listState = rememberLazyGridState()
-
-    val reachedBottom: Boolean by remember {
-        derivedStateOf {
-            val layoutInfo = listState.layoutInfo
-            val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
-            lastVisibleItem != null && lastVisibleItem.index >= (layoutInfo.totalItemsCount - 21)
-        }
-    }
-
-    LaunchedEffect(reachedBottom) {
-        if (reachedBottom) {
-            loadMore()
-        }
-    }
-
     LazyVerticalGrid(
-        modifier = Modifier.testTag(TestTags.CAT_LIST_SECTION).padding(bottom = 15.dp),
+        modifier = Modifier
+            .testTag(TestTags.CAT_LIST_SECTION)
+            .padding(bottom = 15.dp),
         columns = GridCells.Fixed(3),
         contentPadding = contentPadding,
-        state = listState
+        state = gridState.also {
+            it.ScrollEndCallback {
+                loadMore()
+            }
+        }
     ) {
         items(items = cats, key = { it.id }) { cat ->
-            CatCard(cat = cat, openPhoto = openPhoto)
+            CatCard(cat = cat, openPhoto = openPhoto, updateCat = updateCat)
         }
         if (isLoading) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 LoadingMore()
             }
         }
+    }
+}
+
+@Composable
+inline fun LazyGridState.ScrollEndCallback(crossinline callback: () -> Unit) {
+    val context = LocalContext.current
+    LaunchedEffect(key1 = this) {
+        snapshotFlow { layoutInfo }
+            .filter { it.totalItemsCount > 0 }
+            .map { it.totalItemsCount == (it.visibleItemsInfo.lastOrNull()?.index ?: -1).inc() }
+            .distinctUntilChanged()
+            .filter { it && Utils.isNetworkAvailable(context) }
+            .collect {
+                callback()
+            }
     }
 }
 

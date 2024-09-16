@@ -66,4 +66,9 @@ class CatGalleryScreenTest {
             true
         }
     }
+
+    @Test
+    fun scrollToLoadMore() {
+
+    }
 }

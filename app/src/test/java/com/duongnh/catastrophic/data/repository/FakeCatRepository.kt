@@ -7,7 +7,7 @@ import com.duongnh.catastrophic.domain.repository.CatRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class FakeCatRepository: CatRepository {
+class FakeCatRepository : CatRepository {
 
     private val cats = listOf(
         Cat("2lv", "https://cdn2.thecatapi.com/images/2lv.png", 500, 333),
@@ -18,7 +18,10 @@ class FakeCatRepository: CatRepository {
 
 //    private val cats = emptyList<Cat>()
 
-    override suspend fun getCats(catRequest: CatRequest, isForceGetLocalData: Boolean?): Flow<MyResult<List<Cat>, String>> = flow {
+    override suspend fun getCats(
+        catRequest: CatRequest,
+        isForceGetLocalData: Boolean?
+    ): Flow<MyResult<List<Cat>, String>> = flow {
         emit(MyResult.Success(cats))
     }
 

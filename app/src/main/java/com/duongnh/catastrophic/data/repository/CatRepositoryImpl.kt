@@ -1,6 +1,7 @@
 package com.duongnh.catastrophic.data.repository
 
 import android.content.Context
+import android.graphics.Bitmap
 import com.duongnh.catastrophic.data.data_source.local.dao.CatDao
 import com.duongnh.catastrophic.data.data_source.remote.api.CatApi
 import com.duongnh.catastrophic.data.data_source.remote.dto.CatRequest
@@ -41,7 +42,10 @@ class CatRepositoryImpl(
 
         val response = catApi.getCats(catRequest.limit, catRequest.page, catRequest.mime_types)
         if (response.isSuccessful) {
-            catDao.deleteAll()
+            // We will remove all data when going the app first time
+            if(catRequest.page == 1) {
+                catDao.deleteAll()
+            }
 
             val catsFromApi = response.body()?.let { list ->
                 list.map { catResponse ->
@@ -54,6 +58,14 @@ class CatRepositoryImpl(
             emit(MyResult.Success(catsFromApi))
         } else {
             emit(MyResult.Error(response.errorBody()?.string() ?: "Error loading cats"))
+        }
+    }
+
+    override suspend fun updateCatLocalDB(id: String, bitmapImg: Bitmap) {
+        val cat = catDao.getCat(id)
+        if(cat != null) {
+            val newCat = cat.copy(bitmapImg = bitmapImg)
+            catDao.updateCat(newCat)
         }
     }
 }

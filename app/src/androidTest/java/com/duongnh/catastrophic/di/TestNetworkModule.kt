@@ -83,7 +83,11 @@ object TestNetworkModule {
 
     @Provides
     @Singleton
-    fun provideCatRepository(@ApplicationContext context: Context, catDao: CatDao, catApi: CatApi): CatRepository {
+    fun provideCatRepository(
+        @ApplicationContext context: Context,
+        catDao: CatDao,
+        catApi: CatApi
+    ): CatRepository {
         return CatRepositoryImpl(context, catDao, catApi)
     }
 

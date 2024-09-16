@@ -1,4 +1,4 @@
-package com.duongnh.catastrophic.ui.theme
+package com.duongnh.catastrophic.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

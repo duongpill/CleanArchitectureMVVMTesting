@@ -1,20 +1,13 @@
 package com.duongnh.catastrophic.di
 
 import android.content.Context
-import coil3.ImageLoader
-import coil3.SingletonImageLoader
-import coil3.disk.DiskCache
-import coil3.disk.directory
-import coil3.memory.MemoryCache
-import coil3.network.okhttp.OkHttpNetworkFetcherFactory
-import coil3.request.CachePolicy
-import coil3.util.DebugLogger
-import coil3.util.Logger
 import com.duongnh.catastrophic.data.data_source.local.dao.CatDao
 import com.duongnh.catastrophic.data.data_source.remote.api.CatApi
 import com.duongnh.catastrophic.data.repository.CatRepositoryImpl
 import com.duongnh.catastrophic.domain.repository.CatRepository
 import com.duongnh.catastrophic.domain.use_case.GetCatsUseCase
+import com.duongnh.catastrophic.domain.use_case.UpdateCatUseCase
+import com.duongnh.catastrophic.utils.Utils
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -36,7 +29,8 @@ private const val CONNECT_TIMEOUT = 60L
 private const val WRITE_TIMEOUT = 60L
 private const val READ_TIMEOUT = 60L
 private const val API_KEY_NAME = "x-api-key"
-private const val API_KEY_VALUE = "live_K6AF5zDV027B1fYTwHjiv7b3wCZBcPPcJvhcat3RBm045cJy92xzKpLO11rTfJen"
+private const val API_KEY_VALUE =
+    "live_K6AF5zDV027B1fYTwHjiv7b3wCZBcPPcJvhcat3RBm045cJy92xzKpLO11rTfJen"
 private const val CONTENT_TYPE_NAME = "Content-Type"
 private const val CONTENT_TYPE_VALUE = "application/json"
 
@@ -59,9 +53,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofitHttpClient(cache: Cache, headerInterceptor: Interceptor): OkHttpClient {
+    fun provideRetrofitHttpClient(headerInterceptor: Interceptor): OkHttpClient {
         return OkHttpClient.Builder().apply {
-            cache(cache) // make your app offline-friendly without a database!
             connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
             writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
             readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
@@ -69,13 +62,6 @@ object NetworkModule {
             addInterceptor(headerInterceptor)
             addNetworkInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) })
         }.build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideRetrofitCache(@ApplicationContext context: Context): Cache {
-        val cacheSize = 5L * 1024 * 1024
-        return Cache(context.cacheDir, cacheSize)
     }
 
     @Provides
@@ -114,12 +100,21 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideCatRepository(@ApplicationContext context: Context, catDao: CatDao, catApi: CatApi): CatRepository {
+    fun provideCatRepository(
+        @ApplicationContext context: Context,
+        catDao: CatDao,
+        catApi: CatApi
+    ): CatRepository {
         return CatRepositoryImpl(context, catDao, catApi)
     }
 
     @Provides
     fun provideGetCatUseCase(catRepository: CatRepository): GetCatsUseCase {
         return GetCatsUseCase(catRepository)
+    }
+
+    @Provides
+    fun provideUpdateCatUseCase(catRepository: CatRepository): UpdateCatUseCase {
+        return UpdateCatUseCase(catRepository)
     }
 }
