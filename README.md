@@ -6,6 +6,12 @@ This template aims to help me gain overall knowledge about Clean Architecture, M
 
 To build this project, please ensure you installed the Android environments.
 
+### Demo
+
+
+### The APK file
+
+
 ## Main Purposes
 
 ```
@@ -41,6 +47,3 @@ After I had a base structure, I started to code the app:
 ### Testing
 
 I only applied the Unit Test for the Use Case class and did the Integration Test for trying to click the image in the list.
-
-## Demo
-
