@@ -29,8 +29,8 @@ private const val CONNECT_TIMEOUT = 60L
 private const val WRITE_TIMEOUT = 60L
 private const val READ_TIMEOUT = 60L
 private const val API_KEY_NAME = "x-api-key"
-private const val API_KEY_VALUE =
-    "live_K6AF5zDV027B1fYTwHjiv7b3wCZBcPPcJvhcat3RBm045cJy92xzKpLO11rTfJen"
+// Visit https://api.thecatapi.com to get the token so we can use the load more function
+private const val API_KEY_VALUE = ""
 private const val CONTENT_TYPE_NAME = "Content-Type"
 private const val CONTENT_TYPE_VALUE = "application/json"
 

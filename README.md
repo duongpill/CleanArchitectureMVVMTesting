@@ -4,7 +4,8 @@ This template will help me learn about Clean Architecture, MVVM, and Jetpack Com
 
 ## Getting Started
 
-To build this project, please ensure you installed the Android environments.
+To build this project, please ensure you installed the Android environments. 
+And please visit https://api.thecatapi.com site to get the token so we can use the load more function.
 
 ### Demo
 
