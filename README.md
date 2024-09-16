@@ -32,7 +32,7 @@ First of all, I applied CleanArchitecture and MVVM so that I could separate ever
 
 ```
 - Domain: This one will contain the business logic and the entities around the app.
-- Data: We will get the data from the Domain from here.
+- Data: After receiving the request from Domain, Data will return the corresponding data.
 - Presentation: using MVVM, we will have the ViewModel to manage the UI state easily. I also use ViewModel to communicate between View and Model to get the data and update View immediately.
 ```
 
