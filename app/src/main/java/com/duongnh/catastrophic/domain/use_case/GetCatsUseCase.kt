@@ -7,6 +7,9 @@ import com.duongnh.catastrophic.domain.repository.CatRepository
 import kotlinx.coroutines.flow.Flow
 
 class GetCatsUseCase(private val catRepository: CatRepository) {
-    suspend operator fun invoke(catRequest: CatRequest, isForceGetLocalData: Boolean?): Flow<MyResult<List<Cat>, String>> =
+    suspend operator fun invoke(
+        catRequest: CatRequest,
+        isForceGetLocalData: Boolean?
+    ): Flow<MyResult<List<Cat>, String>> =
         catRepository.getCats(catRequest, isForceGetLocalData)
 }

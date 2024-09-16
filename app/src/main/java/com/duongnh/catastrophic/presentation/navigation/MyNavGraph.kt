@@ -1,11 +1,11 @@
-package com.duongnh.catastrophic.navigation
+package com.duongnh.catastrophic.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.duongnh.catastrophic.presentation.cat.CatGalleryRoute
+import com.duongnh.catastrophic.presentation.screen.cat.CatGalleryRoute
 
 @Composable
 fun MyNavGraph(

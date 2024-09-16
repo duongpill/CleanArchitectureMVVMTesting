@@ -15,16 +15,16 @@ class GetCatsUseCaseTest {
     private lateinit var getCatsUseCase: GetCatsUseCase
 
     @Before
-    fun setUp(){
+    fun setUp() {
         catRepository = FakeCatRepository()
         getCatsUseCase = GetCatsUseCase(catRepository)
     }
 
     @Test
     fun `Get Cats, success`() = runBlocking {
-        getCatsUseCase.invoke(CatRequest(10, 1, "png"), false).collect{ result ->
+        getCatsUseCase.invoke(CatRequest(10, 1, "png"), false).collect { result ->
             assertThat(result).isInstanceOf(MyResult.Success::class.java)
-            if(result is MyResult.Success) {
+            if (result is MyResult.Success) {
                 val cats = result.data
                 assertThat(cats).isNotEmpty()
             }
@@ -33,9 +33,9 @@ class GetCatsUseCaseTest {
 
     @Test
     fun `Get Cats, error`() = runBlocking {
-        getCatsUseCase.invoke(CatRequest(10, 1, "png"), false).collect{ result ->
+        getCatsUseCase.invoke(CatRequest(10, 1, "png"), false).collect { result ->
             assertThat(result).isInstanceOf(MyResult.Error::class.java)
-            if(result is MyResult.Error){
+            if (result is MyResult.Error) {
                 val messageError = result.rawResponse
                 assertThat(messageError).isEqualTo("Fail")
             }

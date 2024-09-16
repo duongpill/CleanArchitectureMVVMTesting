@@ -1,4 +1,4 @@
-package com.duongnh.catastrophic.ui.theme
+package com.duongnh.catastrophic.presentation.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

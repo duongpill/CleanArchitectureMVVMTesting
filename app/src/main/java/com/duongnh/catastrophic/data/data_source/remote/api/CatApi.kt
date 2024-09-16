@@ -7,6 +7,9 @@ import retrofit2.http.Query
 
 interface CatApi {
 
+    /**
+     * If the mime_types field is empty, the api will return the JPG types automatically
+     */
     @GET("search")
     suspend fun getCats(
         @Query("limit") limit: Int,

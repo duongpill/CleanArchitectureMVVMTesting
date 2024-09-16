@@ -18,7 +18,7 @@ interface CatDao {
     fun getCat(id: String): CatEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) // Use to replace the old data to avoid the conflict
-    suspend fun insertCat(catEntity: CatEntity) : Long
+    suspend fun insertCat(catEntity: CatEntity): Long
 
     @Delete
     suspend fun deleteCat(catEntity: CatEntity)
