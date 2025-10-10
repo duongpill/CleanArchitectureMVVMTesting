@@ -14,9 +14,6 @@ This app loads images (e.g., from TheCatAPI), caches them locally, supports offl
 - [Setup & Installation](#setup--installation)  
 - [Usage](#usage)  
 - [Testing](#testing)  
-- [Screenshots / Demo](#screenshots--demo)  
-- [Contributing](#contributing)  
-- [License](#license)  
 
 ---
 
@@ -54,12 +51,16 @@ This project follows **Clean Architecture**, separating concerns into three laye
 
 ```mermaid
 flowchart LR
-  UI[User / UI Layer] --> VM[ViewModel]
+  UI[UI] --> VM[ViewModel]
   VM --> UC[UseCase]
-  UC --> Repo[Repository]
-  Repo --> API[Remote / Local]
-  API --> Repo
-  Repo --> UC
+  UC --> REPOIF[Repository Interface]
+  REPOIF --> REPOIMPL[Repository Implementation]
+  REPOIMPL --> REMOTE[Remote API]
+  REPOIMPL --> LOCAL[Local DB]
+  REMOTE --> REPOIMPL
+  LOCAL --> REPOIMPL
+  REPOIMPL --> REPOIF
+  REPOIF --> UC
   UC --> VM
   VM --> UI
 ```
