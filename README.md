@@ -1,50 +1,135 @@
-# Clean Architecture Android Template
+# KotlinTestApp2024
 
-This template will help me learn about Clean Architecture, MVVM, and Jetpack Compose.
+A sample Android application built with **Kotlin**, demonstrating **Clean Architecture**, **MVVM**, and **Jetpack Compose**.  
+This app loads images (e.g., from TheCatAPI), caches them locally, supports offline mode, and displays detail views with animations.
 
-## Getting Started
+---
 
-To build this project, please ensure you installed the Android environments. 
-And please visit https://api.thecatapi.com site to get the token so we can use the load more function.
+## 📖 Table of Contents
 
-### Demo
+- [Overview](#overview)  
+- [Features](#features)  
+- [Architecture & Layers](#architecture--layers)  
+- [Tech Stack](#tech-stack)  
+- [Setup & Installation](#setup--installation)  
+- [Usage](#usage)  
+- [Testing](#testing)  
+- [Screenshots / Demo](#screenshots--demo)  
+- [Contributing](#contributing)  
+- [License](#license)  
 
+---
 
-### The APK file
+## 🧱 Overview
 
+**KotlinTestApp2024** is a learning-oriented Android app template. It demonstrates how to structure a project with **Clean Architecture** and **MVVM**, leveraging modern Android libraries such as Hilt, Room, Retrofit, and Coil.  
+The goal is to showcase best practices for scalability, maintainability, and offline-first capability.
 
-## Main Purposes
+---
 
+## ✨ Features
+
+- Fetch and display image lists from an API  
+- Infinite scroll (“load more”) when reaching list end  
+- Shimmer or placeholder effect while images load  
+- Caching images and data in Room database  
+- Offline mode: display cached data when no network  
+- Detail view for each image with animated transitions  
+- Drag-to-close gesture in detail view  
+- Unit and integration tests  
+
+---
+
+## 🏗 Architecture & Layers
+
+This project follows **Clean Architecture**, separating concerns into three layers:
+
+| Layer | Description |
+|--------|-------------|
+| **Domain** | Contains core business logic, entities, and UseCases |
+| **Data** | Implements repositories, manages remote (API) and local (Room) data sources |
+| **Presentation** | UI layer built with Jetpack Compose and ViewModels managing reactive states |
+
+### 📊 Data Flow Diagram
+
+```mermaid
+flowchart LR
+  UI[User / UI Layer] --> VM[ViewModel]
+  VM --> UC[UseCase]
+  UC --> Repo[Repository]
+  Repo --> API[Remote / Local]
+  API --> Repo
+  Repo --> UC
+  UC --> VM
+  VM --> UI
 ```
-- Using the Clean Architecture and MVVM.
-- Using the newest Android libraries.
-- Show the Image list by Coil.
-- Use the Room to save the data in the local database.
-- Show the Images even when using offline mode.
-- Show/hide the image details in the animation.
-- Have some test cases to make sure the app works perfectly.
+
+---
+
+## 🛠 Tech Stack
+
+| Concern | Library / Tool |
+|----------|----------------|
+| Language | Kotlin |
+| UI | Jetpack Compose, Material3 |
+| DI | Hilt (Dagger) |
+| Networking | Retrofit, OkHttp |
+| Local Storage | Room |
+| Image Loading | Coil |
+| Async | Coroutines, Flow |
+| Navigation | Navigation Compose |
+| Testing | JUnit, Espresso, Compose UI Test |
+
+---
+
+## ⚙️ Setup & Installation
+
+### 1️⃣ Clone the Repository
+```bash
+git clone https://github.com/duongpill/KotlinTestApp2024.git
+cd KotlinTestApp2024
 ```
 
-### Description
-
-I used the newest Android libraries in this project, such as Jetpack Compose, Compose Navigation, Hilt, Room, Retrofit, and Coil.
-
-First of all, I applied CleanArchitecture and MVVM so that I could separate everything independently. Therefore, I divided them into main sections: Domain, Data, and Presentation.
-
+### 2️⃣ Configure API Key (if required)
+If using an external API (like TheCatAPI), add your API key to:
 ```
-- Domain: This one will contain the business logic and the entities around the app.
-- Data: After receiving the request from Domain, Data will return the corresponding data.
-- Presentation: using MVVM, we will have the ViewModel to manage the UI state easily. I also use ViewModel to communicate between View and Model to get the data and update View immediately.
+local.properties
+```
+```properties
+CAT_API_KEY=your_api_key_here
 ```
 
-After I had a base structure, I started to code the app:
+### 3️⃣ Build and Run
+Open the project in Android Studio, then run:
+```bash
+./gradlew assembleDebug
+```
+or simply click ▶️ **Run** inside Android Studio.
 
-- I will use Jetpack Compose to create the app UI because it currently supports Android.
-- I used the Coil to load the images and showed the Shimmer when the image was loading, then I cached the loaded images in the disk and memory.
-- I applied the infinite loading when scrolling the items.
-- Show the animation to load the image detail and drag gestures to close it.
-- When the app goes offline, we will get the last items in the database and use Bitmap to load the image.
+---
 
-### Testing
+## ▶️ Usage
 
-I only applied the Unit Test for the Use Case class and did the Integration Test for trying to click the image in the list.
+- Launch the app to view an image list loaded from the API  
+- Scroll to load more images automatically  
+- Tap any image to view details with animation  
+- Drag down to close the detail screen  
+- When offline, previously loaded images are displayed from cache  
+
+---
+
+## 🧪 Testing
+
+- **Unit Tests** for UseCases and domain logic  
+- **Integration / UI Tests** for verifying user flows and state management  
+
+---
+
+Example flow:
+```
+🏠 Home Screen → Scroll → Tap Image → Detail Animation → Drag Down to Close
+```
+
+---
+
+*Thank you for checking out KotlinTestApp2024! Happy coding! 🚀*
